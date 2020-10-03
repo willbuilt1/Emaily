@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 
 const User = mongoose.model('users');
 
+//tells passport that we are using cookies
+
 passport.serializeUser((user, done) => {
     //using internal mongoDB id
     done(null, user.id);
