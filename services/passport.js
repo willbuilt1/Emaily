@@ -30,22 +30,20 @@ passport.use(
             proxy: true,
         },
         //gets called when information comes back from Google
-        (accessToken, refreshToken, profile, done) => {
+        async (accessToken, refreshToken, profile, done) => {
             //returns a promise, existingUser object
-            User.findOne({ googleID: profile.id }).then((existingUser) => {
-                //returns null if user does not exist
-                if (existingUser) {
-                    // user exists
-                    // arg = no issue, arg2 = the user returned
-                    done(null, existingUser);
-                } else {
-                    //user doesn't exist create a user
-                    new User({ googleID: profile.id })
-                        .save()
-                        .then((user) => done(null, user));
-                    //generally use second model instance as this may have extra info, save() returns a promise
-                }
-            });
+            const existingUser = await User.findOne({ googleID: profile.id });
+            //returns null if user does not exist
+            if (existingUser) {
+                // user exists
+                // arg1 = no issue, arg2 = the user returned
+                done(null, existingUser);
+            } else {
+                //user doesn't exist create a user
+                const user = await new User({ googleID: profile.id }).save();
+                done(null, user);
+                //generally use second model instance as this may have extra info, save() returns a promise
+            }
         }
     )
 );
