@@ -1,29 +1,34 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import Payments from './Payments';
 
 class Header extends Component {
     renderContent() {
         switch (this.props.auth) {
             case null:
                 return;
+            //Not logged in
             case false:
                 return (
                     <li>
                         <a href="/auth/google">Login with Google</a>
                     </li>
                 );
+            //Logged in as object returned, easier to use default rather than check for object
+            //Array returned so that not unnecessarily adding HTML
             default:
-                return (
-                    <li>
+                return [
+                    <li key="1">
+                        <Payments />
+                    </li>,
+                    <li key="2">
                         <a href="/api/logout">Logout</a>
-                    </li>
-                );
+                    </li>,
+                ];
         }
     }
     render() {
-        console.log(this.props);
-
         return (
             <div>
                 <nav>
