@@ -30,6 +30,17 @@ app.use(passport.session());
 require('./routes/authRoutes')(app);
 require('./routes/billingRoutes')(app);
 
+if (process.env.NODE_ENV === 'production') {
+    //This will serve up production assets if the path is recognised.
+    app.use(express.static('client/build'));
+
+    //If not it will serve up the index.html file.
+    const path = require('path');
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+    });
+}
+
 //base path
 app.get('/', (req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/html' });
